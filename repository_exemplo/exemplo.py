@@ -14,7 +14,6 @@ def login():
 
     # Vulnerabilidade de SQL Injection
     query = "SELECT * FROM usuarios WHERE usuario = '" + usuario + "' AND senha = '" + senha + "'"
-    query = "<script></script>"
     cursor.execute(query)
     resultado = cursor.fetchall()
 

@@ -23,7 +23,7 @@ class MonitoramentoArquivos(FileSystemEventHandler):
                 codigo = f.read()
                 vulnerabilidades_detectadas.extend(analisar_codigo(codigo))
 
-repositorio_projeto = "C:/Users/USUÁRIO/PycharmProjects/PythonProject"
+repositorio_projeto = "./repository_exemplo"
 monitor = MonitoramentoArquivos()
 observador = Observer()
 observador.schedule(monitor, path=repositorio_projeto, recursive=True)
@@ -35,7 +35,7 @@ def atualizar_dash():
         df = pd.DataFrame(list(contagem.items()), columns=['Tipo de Vulnerabilidade', 'Ocorrências'])
         fig = px.bar(df, x='Tipo de Vulnerabilidade', y='Ocorrências', title='Análise de Código')
         dash_app.layout = html.Div(children=[
-            html.H1("Relatório de Segurança de Código"),
+            html.H1(""),
             dcc.Graph(figure=fig)
         ])
         time.sleep(5)
