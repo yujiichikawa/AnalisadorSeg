@@ -1,19 +1,34 @@
-from lexer import lexer
-from analise.security_analysis import detectar_sql_injection, detectar_xss,detectar_injecao_comando
-from relatorio import gerar_relatorio
+from watchdog.observers import Observer
+from watchdog.events import FileSystemEventHandler
+import time
+import os
 
-#codigo = "SELECT * FROM users WHERE username='admin'"
-#codigo = "<script>alert("")</script>"
-codigo = "System.exec()"
+from analise.security_analysis import analisar_codigo, salvar_resultados
 
-print("--- Analisando Código ---")
-lexer.input(codigo)
-for token in lexer:
-    print(token)
+vulnerabilidades_detectadas = []
 
-print("\n--- Verificação de Segurança ---")
-print(detectar_sql_injection(codigo))
-print(detectar_xss(codigo))
-print(detectar_injecao_comando(codigo))
-gerar_relatorio(codigo)
+class MonitoramentoArquivos(FileSystemEventHandler):
+    def on_modified(self, event):
+        if event.src_path.endswith(('.py', '.java', '.c', '.cpp', '.js')):
+            with open(event.src_path, 'r', encoding='utf-8', errors='ignore') as f:
+                codigo = f.read()
+                vulnerabilidades_detectadas.extend(analisar_codigo(codigo, event.src_path))
+                
+                # Exibir resultados no terminal
+                for vuln in vulnerabilidades_detectadas:
+                    print(f"[!] {vuln['tipo']} encontrado no arquivo {vuln['arquivo']}")
+                
+                # Salvar em JSON
+                salvar_resultados(vulnerabilidades_detectadas)
 
+monitor = MonitoramentoArquivos()
+observador = Observer()
+observador.schedule(monitor, path="./repository_exemplo", recursive=True)
+observador.start()
+
+try:
+    while True:
+        time.sleep(1)
+except KeyboardInterrupt:
+    observador.stop()
+observador.join()
