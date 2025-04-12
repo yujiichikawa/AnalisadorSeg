@@ -22,7 +22,6 @@ def analisar_todos_os_arquivos(diretorio):
     atualizar_json(diretorio) 
 
 def atualizar_json(diretorio):
-    """Reanalisa todos os arquivos e remove vulnerabilidades corrigidas do JSON"""
     vulnerabilidades_atualizadas = []
 
     for root, _, files in os.walk(diretorio):

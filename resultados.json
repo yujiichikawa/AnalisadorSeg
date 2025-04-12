@@ -1,0 +1,10 @@
+[
+    {
+        "arquivo": "./repository_exemplo/teste.py",
+        "tipo": "Uso de eval/exec"
+    },
+    {
+        "arquivo": "./repository_exemplo/exemplo.py",
+        "tipo": "Possível Cross-Site Scripting"
+    }
+]
